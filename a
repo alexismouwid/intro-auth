@@ -1,0 +1,11 @@
+[33mcommit 97eded1351e5b34f8d188decc6b8444cb34277b9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: alexismouwid <alexismouwid@gmail.com>
+Date:   Mon Feb 17 11:54:50 2025 -0500
+
+    Se implementá el middleware validateJwt: decodifica el token recibido, y se implementa un nuevo endpoint lllamado lele
+
+[33mcommit f23eed21e14bf725408b460b19a57c152046d548[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: Alexis Vega <alexismouwid@gmail.com>
+Date:   Sun Feb 16 16:05:46 2025 -0500
+
+    Primer commit

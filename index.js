@@ -15,9 +15,10 @@ mongoose.connect('mongodb+srv://alexismouwid:yosoyotaku23.@intro-mondodb.19ttj.m
 const app = express()
 
 app.use(express.json())
+console.log(process.env.SECRET)
 
-const validateJwt = expressJwt({ secret: 'mi-string-secreto', algorithms: ['HS256'] })
-const signToken = _id => jwt.sign({ _id }, 'mi-string-secreto')
+const validateJwt = expressJwt({ secret: process.env.SECRET , algorithms: ['HS256'] })
+const signToken = _id => jwt.sign({ _id }, process.env.SECRET)
 
 app.post('/register', async (req, res) => {
   const { body } = req
@@ -60,12 +61,23 @@ app.post('/login', async (req, res) => {
      }
 })
 
-app.get('/lele', validateJwt, (req, res) => {
-  console.log('Token recibido:', req.headers.authorization); 
-  console.log('Token decodificado:', req.auth); 
+const findAndAssignUser =   async (req, res, next) => {
+    try{
+        const user  = await User.findById(req.auth._id)
+            if(!user){
+               return res.status(401).end()
+            }
+     req.auth = user
+     next()
+     } catch (e) {
+     next(e)
+     }
 
-  res.send('ok');
-});
+}
+const isAuthenticated = express.Router().use(validateJwt, findAndAssignUser)
+app.get('/lele', isAuthenticated, (req, res) => {
+   res.send(req.auth)
+})
 
 // Middleware de manejo de errores
 app.use((err, req, res, next) => {
