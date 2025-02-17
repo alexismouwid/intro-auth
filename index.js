@@ -17,9 +17,14 @@ const app = express()
 app.use(express.json())
 console.log(process.env.SECRET)
 
+
+//Verifica, valida y decodifica token
 const validateJwt = expressJwt({ secret: process.env.SECRET , algorithms: ['HS256'] })
+
+//usa Jwt para generar, firmar y devolver un token
 const signToken = _id => jwt.sign({ _id }, process.env.SECRET)
 
+//Registra, encripta, guarda, verifica, autentica y responde
 app.post('/register', async (req, res) => {
   const { body } = req
   try {
@@ -38,7 +43,7 @@ app.post('/register', async (req, res) => {
     res.status(500).send(err.message)
   }
 })
-
+//Autentica usuario, verifica contraseña, genera token JWT y responde con el token o mensaje de error
 app.post('/login', async (req, res) => {
     const { body } = req
     try {
@@ -60,7 +65,7 @@ app.post('/login', async (req, res) => {
         res.status(500).send('Error en el servidor, inténtalo más tarde')
      }
 })
-
+//Busca usuario por ID desde req.auth._id, asigna el usuario encontrado a req.auth y maneja errores de búsqueda.
 const findAndAssignUser =   async (req, res, next) => {
     try{
         const user  = await User.findById(req.auth._id)
@@ -74,6 +79,7 @@ const findAndAssignUser =   async (req, res, next) => {
      }
 
 }
+//Fusiona validación de token y búsqueda de usuario, autentica y responde con datos del usuario.
 const isAuthenticated = express.Router().use(validateJwt, findAndAssignUser)
 app.get('/lele', isAuthenticated, (req, res) => {
    res.send(req.auth)
